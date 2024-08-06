@@ -28,6 +28,10 @@ func main(){
 		// case 6:
 		// 	controllers.ListBorrowedBooks()
 		case 7:
+			controllers.AddMember()
+		case 8:
+			controllers.RemoveMember()
+		case 9:
 			fmt.Println("Exiting the program")
 			return
 		default:

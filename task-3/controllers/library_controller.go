@@ -7,6 +7,7 @@ import (
 	"os"
 	"Task-3/services"
 	"strconv"
+	"strings"
 )
 
 var library = services.NewLibrary()
@@ -19,7 +20,9 @@ func ShowMenu() {
 	fmt.Println("4. Return Book")
 	fmt.Println("5. List Available Books")
 	fmt.Println("6. List Borrowed Books")
-	fmt.Println("7. Exit")
+	fmt.Println("7. Add Member")
+	fmt.Println("8. Remove Member")
+	fmt.Println("9. Exit")
 }
 
 func bookInput() models.Book {
@@ -51,14 +54,14 @@ func AddBook() {
 }
 
 func RemoveBook() {
-	var bookID int
+	var memberID int
 	var err error
 	for {
 		scanner := bufio.NewScanner(os.Stdin)
 		fmt.Println("Enter book ID to remove:")
 		scanner.Scan()
 		input := scanner.Text()
-		bookID, err = strconv.Atoi(input)
+		memberID, err = strconv.Atoi(input)
 
 		if err != nil {
 			fmt.Println("Invalid book ID")
@@ -67,6 +70,48 @@ func RemoveBook() {
 		break
 	}
 	// Call the RemoveBook method from the library service
-	library.RemoveBook(bookID)
+	library.RemoveBook(memberID)
 	// fmt.Println("The library books",library.Books)
+}
+
+
+
+
+
+
+// member related functions
+func AddMember(){
+	newMember := models.Member{}
+	newMember.BorrowedBooks = []models.Book{}
+	newMember.ID = library.NextMemberID
+	library.NextMemberID++
+
+	// Prompt the user to enter member name
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Println("Enter member name:")
+	scanner.Scan()
+	newMember.Name = scanner.Text()
+	newMember.Name = strings.TrimSpace(newMember.Name)
+	library.AddMember(newMember)
+	fmt.Println("The library members",library.Members)
+}
+
+func RemoveMember(){
+	var memberID int
+	var err error
+	for {
+		scanner := bufio.NewScanner(os.Stdin)
+		fmt.Println("Enter book ID to remove:")
+		scanner.Scan()
+		input := scanner.Text()
+		memberID, err = strconv.Atoi(input)
+
+		if err != nil {
+			fmt.Println("Member ID is invalid")
+			continue
+		}
+		break
+	}
+	// Call the RemoveBook method from the library service
+	library.RemoveMember(memberID)
 }
