@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"Task-3/services"
+	"strconv"
 )
 
 var library = services.NewLibrary()
@@ -22,7 +23,7 @@ func ShowMenu() {
 }
 
 func bookInput() models.Book {
-	newBook := models.Book{}
+	newBook := models.Book{Status: "Available"}
 	newBook.ID = library.NextBookID
 	// Prompt the user to enter title and Author
 	scanner := bufio.NewScanner(os.Stdin)
@@ -45,6 +46,27 @@ func AddBook() {
 
 	// Call the AddBook method from the library service
 	library.AddBook(newBook)
-	fmt.Println("The library books",library.Books)
+	// fmt.Println("The library books",library.Books)
 
+}
+
+func RemoveBook() {
+	var bookID int
+	var err error
+	for {
+		scanner := bufio.NewScanner(os.Stdin)
+		fmt.Println("Enter book ID to remove:")
+		scanner.Scan()
+		input := scanner.Text()
+		bookID, err = strconv.Atoi(input)
+
+		if err != nil {
+			fmt.Println("Invalid book ID")
+			continue
+		}
+		break
+	}
+	// Call the RemoveBook method from the library service
+	library.RemoveBook(bookID)
+	// fmt.Println("The library books",library.Books)
 }

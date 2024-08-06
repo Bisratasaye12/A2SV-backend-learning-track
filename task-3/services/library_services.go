@@ -32,3 +32,8 @@ func (lib *Library) AddBook(book models.Book) {
 	lib.NextBookID++
 	fmt.Println("Book added successfully")
 }
+
+func (lib *Library) RemoveBook(bookID int) {
+	delete(lib.Books, bookID)
+	fmt.Println("Book removed successfully")
+}

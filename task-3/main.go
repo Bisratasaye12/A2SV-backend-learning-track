@@ -17,8 +17,8 @@ func main(){
 		switch choice {
 		case 1:
 			controllers.AddBook()
-		// case 2:
-		// 	controllers.RemoveBook()
+		case 2:
+			controllers.RemoveBook()
 		// case 3:
 		// 	controllers.BorrowBook()
 		// case 4:
@@ -27,9 +27,9 @@ func main(){
 		// 	controllers.ListAvailableBooks()
 		// case 6:
 		// 	controllers.ListBorrowedBooks()
-		// case 7:
-		// 	fmt.Println("Exiting the program")
-		// 	return
+		case 7:
+			fmt.Println("Exiting the program")
+			return
 		default:
 			fmt.Println("Invalid choice")
 		}
