@@ -42,6 +42,12 @@ func (lib *Library) RemoveBook(bookID int) {
 		fmt.Println("Book not found")
 		return
 	}
+
+	if lib.Books[bookID].Status == "Borrowed" {
+		fmt.Println("Book is borrowed, cannot remove")
+		return
+	}
+	
 	delete(lib.Books, bookID)
 	fmt.Println("Book removed successfully")
 }
