@@ -17,6 +17,7 @@ var tasks = []models.Task{
 
 
 func GetTasks() ([]models.Task, error) {
+	
 	if len(tasks) == 0{
 		return nil, fmt.Errorf("no available task")
 	}
@@ -41,9 +42,9 @@ func AddTask(task models.Task) (models.Task, error){
 	return task, nil
 }
 
-func UpdateTask(updated_task models.Task) models.Task{
+func UpdateTask(id string, updated_task models.Task) (models.Task, error){
 	for i, task := range tasks{
-		if updated_task.ID == task.ID{
+		if id == task.ID{
 			if updated_task.Title != ""{
 				tasks[i].Title = updated_task.Title
 			}
@@ -54,21 +55,20 @@ func UpdateTask(updated_task models.Task) models.Task{
 				tasks[i].Status = updated_task.Status
 			}
 			tasks[i].DueDate = updated_task.DueDate
-			return tasks[i]
+			return tasks[i], nil
 		}
 	}
 	tasks = append(tasks, updated_task)
-	return updated_task
+	return updated_task, fmt.Errorf("no such task")
 }
 
 
-func DeleteTask(id string) error{
+func DeleteTask(id string){
 
 	for i,task := range tasks{
 		if task.ID == id{
 			tasks = append(tasks[:i], tasks[i+1:]...)
-			return nil
+			return 
 		}
 	}
-	return fmt.Errorf("task not found")
 }

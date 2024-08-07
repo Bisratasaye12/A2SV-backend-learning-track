@@ -2,11 +2,22 @@ package controllers
 
 import (
 	"Task-4/data"
-	"net/http"
 	"Task-4/models"
+	"math"
+	"math/rand"
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 )
 
+// utility functions
+func giveId() string {
+	randomID := rand.Intn(math.MaxInt)
+	return strconv.Itoa(randomID)
+}
+
+// main functions
 func GetTasks(c *gin.Context){
 	tasks, err := data.GetTasks()
 	if err != nil{
@@ -27,6 +38,7 @@ func GetTask( c *gin.Context){
 
 func AddTask(c *gin.Context){
 	var newTask models.Task
+	newTask.ID = giveId()
 	if err := c.ShouldBindJSON(&newTask); err != nil{
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Bad Request"})
 	}
@@ -36,23 +48,23 @@ func AddTask(c *gin.Context){
 }
 
 func UpdateTask(c *gin.Context){
+	id := c.Param("id")
 	var updated_task models.Task
 	if err := c.ShouldBindJSON(&updated_task); err != nil{
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Bad Request"})
 	}
 
-	data.UpdateTask(updated_task)
+	updated_task, err := data.UpdateTask(id, updated_task)
+	if err != nil{
+		updated_task.ID = id
+	}
 	c.IndentedJSON(http.StatusOK, updated_task)
 }
 
 func DeleteTask(c *gin.Context){
-	var toBeRemoved models.Task
-	if err := c.ShouldBindJSON(&toBeRemoved); err != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
-	}
-
-	data.DeleteTask(toBeRemoved.ID)
-	c.IndentedJSON(http.StatusOK, gin.H{"message": "Task Removed Successfully!"})
+	id := c.Param("id")
+	data.DeleteTask(id)
+	c.IndentedJSON(204, gin.H{"message": "Task Removed Successfully!"})
 }
 
 

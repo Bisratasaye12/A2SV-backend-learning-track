@@ -6,13 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
-
-func main(){
+func main() {
 	r := gin.Default()
 
 	router.InitRouter(r)
 
-	r.Run("localhost:8080")
+	r.Run("localhost:8088")
 
 }
