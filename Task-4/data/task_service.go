@@ -16,6 +16,8 @@ var tasks = []models.Task{
 }
 
 
+// GetTasks retrieves all tasks from the in-memory data store.
+// Returns a slice of Task models and an error if no tasks are available.
 func GetTasks() ([]models.Task, error) {
 	
 	if len(tasks) == 0{
@@ -24,6 +26,14 @@ func GetTasks() ([]models.Task, error) {
 
 	return tasks, nil
 }
+
+
+// GetTask retrieves a specific task by its ID from the in-memory data store.
+// Parameters:
+//   - id: The ID of the task to retrieve.
+// Returns:
+//   - Task: The task with the specified ID.
+//   - error: An error if the task is not found.
 
 func GetTask(id string) (models.Task, error) {
 	for _, task := range tasks{
@@ -34,6 +44,14 @@ func GetTask(id string) (models.Task, error) {
 	return models.Task{}, fmt.Errorf("task not found")
 }
 
+
+
+// AddTask adds a new task to the in-memory data store.
+// Parameters:
+//   - task: The Task model to be added.
+// Returns:
+//   - Task: The added task with all its details.
+//   - error: An error if the task is empty.
 func AddTask(task models.Task) (models.Task, error){
 	if task.IsEmpty(){
 		return models.Task{}, fmt.Errorf("task is empty")
@@ -42,6 +60,15 @@ func AddTask(task models.Task) (models.Task, error){
 	return task, nil
 }
 
+
+
+// UpdateTask updates an existing task in the in-memory data store based on the provided ID.
+// Parameters:
+//   - id: The ID of the task to update.
+//   - updated_task: The Task model containing the updated details.
+// Returns:
+//   - Task: The updated task.
+//   - error: An error if the task to update does not exist.
 func UpdateTask(id string, updated_task models.Task) (models.Task, error){
 	for i, task := range tasks{
 		if id == task.ID{
@@ -63,6 +90,10 @@ func UpdateTask(id string, updated_task models.Task) (models.Task, error){
 }
 
 
+
+// DeleteTask removes a task from the in-memory data store based on the provided ID.
+// Parameters:
+//   - id: The ID of the task to delete.
 func DeleteTask(id string){
 
 	for i,task := range tasks{
