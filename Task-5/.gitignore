@@ -1,0 +1,41 @@
+# Binaries
+*.exe
+*.exe~
+*.out
+*.app
+*.dSYM/
+
+# Go build artifacts
+*.a
+*.o
+*.so
+*.test
+*.prof
+
+# Dependency directories
+vendor/
+
+# Configuration files
+.env
+
+# Log files
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage output
+coverage.out
+
+# Go modules cache
+go.sum
+
+# Exclude .env files and sensitive data
+.env
