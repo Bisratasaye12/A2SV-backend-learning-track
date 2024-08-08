@@ -11,7 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-
 var (
 	dbClient *mongo.Client
 	tasks    *mongo.Collection
@@ -26,8 +25,10 @@ func init() {
 	tasks = dbClient.Database("Task_management").Collection("tasks")
 }
 
-
 // GetTasks retrieves all tasks from the database.
+// It performs a query to fetch all documents from the "tasks" collection
+// and returns them as a slice of models.Task. It returns an error if
+// there is an issue with the query or decoding the documents.
 func GetTasks() ([]models.Task, error) {
 	filter := bson.D{{}}
 	var fetchedTasks []models.Task
@@ -53,9 +54,10 @@ func GetTasks() ([]models.Task, error) {
 	return fetchedTasks, nil
 }
 
-
-
-
+// GetTask retrieves a single task from the database by its ID.
+// It queries the "tasks" collection using the provided ObjectID and
+// returns the corresponding task as a models.Task. If the task is not
+// found, it returns an error indicating that the task with the specified ID was not found.
 func GetTask(id primitive.ObjectID) (models.Task, error) {
 	filter := bson.D{{"_id", id}}
 
@@ -71,10 +73,11 @@ func GetTask(id primitive.ObjectID) (models.Task, error) {
 	return fetchedTask, nil
 }
 
-
-
+// AddTask inserts a new task into the database.
+// It takes a models.Task as input, which should have an empty ID.
+// After insertion, it sets the task's ID to the newly generated ObjectID.
+// It returns the inserted task with its ID and an error if the insertion fails.
 func AddTask(task models.Task) (models.Task, error) {
-	
 	if task.ID != (primitive.ObjectID{}) {
 		return models.Task{}, fmt.Errorf("task ID should be empty for new tasks")
 	}
@@ -89,9 +92,12 @@ func AddTask(task models.Task) (models.Task, error) {
 	return task, nil
 }
 
-
-
-func UpdateTask(id primitive.ObjectID, updated_task models.Task) (models.Task, error){
+// UpdateTask updates an existing task in the database.
+// It takes the task's ID and an updated models.Task as input.
+// It constructs an update document with the fields that are not empty in the updated_task.
+// If no fields are specified for update, it returns an error indicating that there are no fields to update.
+// After the update, it retrieves and returns the updated task. It returns an error if the update fails or the task cannot be retrieved.
+func UpdateTask(id primitive.ObjectID, updated_task models.Task) (models.Task, error) {
 	filter := bson.D{{"_id", id}}
 
 	updateFields := bson.D{}
@@ -129,13 +135,15 @@ func UpdateTask(id primitive.ObjectID, updated_task models.Task) (models.Task, e
 	return updatedTaskResult, nil
 }
 
-
+// DeleteTask removes a task from the database by its ID.
+// It takes the task's ObjectID as input and deletes the corresponding document
+// from the "tasks" collection. It returns an error if the deletion fails.
 func DeleteTask(id primitive.ObjectID) error {
 	filter := bson.D{{"_id", id}}
 
 	_, err := tasks.DeleteOne(context.TODO(), filter)
-	if err != nil{
-		return fmt.Errorf(err.Error())
+	if err != nil {
+		return fmt.Errorf("unable to delete task: %v", err)
 	}
 	return nil
 }
