@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 )
 
@@ -17,7 +20,10 @@ func calculateAverageGrade(grades []float64) float64 {
 func main() {
 	var studentName string
 	fmt.Print("Enter Your Name (or 'q' to quit): ")
-	fmt.Scanln(&studentName)
+	reader := bufio.NewReader(os.Stdin)
+	studentName, _ = reader.ReadString('\n')
+	studentName = strings.TrimSpace(studentName)
+
 	if strings.ToLower(studentName) == "q" {
 		fmt.Println("Exiting the program.")
 		return
@@ -28,14 +34,16 @@ func main() {
 	for {
 		fmt.Print("Enter the number of subjects (or 'q' to quit): ")
 		var userInput string
-		fmt.Scanln(&userInput)
+		reader := bufio.NewReader(os.Stdin)
+		userInput, _ = reader.ReadString('\n')
+		userInput = strings.TrimSpace(userInput)
 
 		if strings.ToLower(userInput) == "q" {
 			fmt.Println("Exiting the program.")
 			return
 		}
-
-		_, err := fmt.Sscanf(userInput, "%d", &numberOfSubjects)
+		
+		numberOfSubjects, err := strconv.Atoi(userInput)
 		if err != nil || numberOfSubjects <= 0 {
 			fmt.Println("Invalid input. Please enter a positive integer.")
 			continue
@@ -50,7 +58,9 @@ func main() {
 		var subjectName string
 		var grade float64
 		fmt.Printf("Enter the name of subject %d (or 'q' to quit): ", i+1)
-		fmt.Scanln(&subjectName)
+		reader := bufio.NewReader(os.Stdin)
+		subjectName, _ = reader.ReadString('\n')
+		subjectName = strings.TrimSpace(subjectName)
 
 		if strings.ToLower(subjectName) == "q" {
 			fmt.Println("Exiting the program.")
@@ -58,16 +68,19 @@ func main() {
 		}
 
 		for {
-			fmt.Printf("Enter the grade for %s (or 'q' to quit): "k, subjectName)
+			fmt.Printf("Enter the grade for %s (or 'q' to quit): ", subjectName)
 			var gradeInput string
-			fmt.Scanln(&gradeInput)
+			
+			reader := bufio.NewReader(os.Stdin)
+			gradeInput, _ = reader.ReadString('\n')
+			gradeInput = strings.TrimSpace(gradeInput)
 
 			if strings.ToLower(gradeInput) == "q" {
 				fmt.Println("Exiting the program!")
 				return
 			}
 
-			_, err := fmt.Sscanf(gradeInput, "%f", &grade)
+			grade, err := strconv.ParseFloat(gradeInput, 64)
 			if err != nil || grade < 0 || grade > 100 {
 				fmt.Println("Invalid input. Please enter a grade between 0 and 100.")
 				continue
