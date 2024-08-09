@@ -34,23 +34,27 @@ func main() {
 	for {
 		fmt.Print("Enter the number of subjects (or 'q' to quit): ")
 		var userInput string
+		var err error
 		reader := bufio.NewReader(os.Stdin)
-		userInput, _ = reader.ReadString('\n')
+		userInput, err = reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading input. Please try again.")
+			continue
+		}
 		userInput = strings.TrimSpace(userInput)
 
 		if strings.ToLower(userInput) == "q" {
 			fmt.Println("Exiting the program.")
 			return
 		}
-		
-		numberOfSubjects, err := strconv.Atoi(userInput)
+
+		numberOfSubjects, err = strconv.Atoi(userInput)
 		if err != nil || numberOfSubjects <= 0 {
 			fmt.Println("Invalid input. Please enter a positive integer.")
 			continue
 		}
 		break
 	}
-
 
 	subjectGrades := make(map[string]float64)
 
@@ -70,7 +74,7 @@ func main() {
 		for {
 			fmt.Printf("Enter the grade for %s (or 'q' to quit): ", subjectName)
 			var gradeInput string
-			
+
 			reader := bufio.NewReader(os.Stdin)
 			gradeInput, _ = reader.ReadString('\n')
 			gradeInput = strings.TrimSpace(gradeInput)
@@ -79,8 +83,9 @@ func main() {
 				fmt.Println("Exiting the program!")
 				return
 			}
-
-			grade, err := strconv.ParseFloat(gradeInput, 64)
+			
+			var err error
+			grade, err = strconv.ParseFloat(gradeInput, 64)
 			if err != nil || grade < 0 || grade > 100 {
 				fmt.Println("Invalid input. Please enter a grade between 0 and 100.")
 				continue
@@ -91,7 +96,6 @@ func main() {
 		subjectGrades[subjectName] = grade
 	}
 
-
 	grades := make([]float64, 0, numberOfSubjects)
 	for _, grade := range subjectGrades {
 		grades = append(grades, grade)
@@ -100,7 +104,6 @@ func main() {
 	// Calculating the average grade
 	averageGrade := calculateAverageGrade(grades)
 
-	
 	fmt.Println("\n~~~~~ Student Grade Report ~~~~~")
 	fmt.Printf("Student Name: %s\n", studentName)
 	for subject, grade := range subjectGrades {
