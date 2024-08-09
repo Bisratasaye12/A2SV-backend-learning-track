@@ -105,3 +105,82 @@ func DeleteTask(c *gin.Context) {
 	}
 	c.IndentedJSON(http.StatusNoContent, gin.H{"message": "Task Removed Successfully!"})
 }
+
+
+
+// Auth
+
+func Register(c *gin.Context){
+	var user models.User
+	
+	if err := c.ShouldBindJSON(&user); err != nil{
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return 
+	}
+
+	err := user.Validate()
+	if err != nil{
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return 
+	}
+	err = data.Register(&user)
+	if err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "unable to register", "error": err.Error()})
+		return
+	}
+	
+	c.IndentedJSON(http.StatusCreated, gin.H{"message": "user successfully registered!"})
+}
+
+
+func Login(c *gin.Context) {
+	var user models.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+	  c.JSON(400, gin.H{"error": "Invalid request payload"})
+	  return
+	}
+  
+	token, err := data.Login(&user)
+	if err != nil{
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, gin.H{"message": "User logged in successfully", "token": token})
+  }
+
+
+func PromoteUser(c *gin.Context){
+	
+	userID := c.Param("id")
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	
+	requestingUserRole, exists := c.Get("role")
+	if !exists || requestingUserRole != "admin" {
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Only admins can promote users"})
+		return
+	}
+
+	err = data.PromoteUser(objectID)
+	if err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "User promoted to admin"})
+}
+
+
+func GetUsers(c *gin.Context){
+	usrs := data.GetUsers()
+	if usrs == nil{
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "no registered user found."})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": usrs})
+}
+
