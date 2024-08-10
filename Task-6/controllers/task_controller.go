@@ -103,7 +103,7 @@ func DeleteTask(c *gin.Context) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
-	c.IndentedJSON(http.StatusNoContent, gin.H{"message": "Task Removed Successfully!"})
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "Task Removed Successfully!"})
 }
 
 

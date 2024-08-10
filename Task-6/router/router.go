@@ -33,6 +33,6 @@ func InitRouter(r *gin.Engine) {
 	userRoutes := r.Group("/users", middleware.AuthMiddleware("user", "admin"))
 	{
 		userRoutes.GET("/", controllers.GetUsers)
-		userRoutes.POST("/promote/:id", middleware.AuthMiddleware("admin"), controllers.PromoteUser)
+		userRoutes.PUT("/promote/:id", middleware.AuthMiddleware("admin"), controllers.PromoteUser)
 	}
 }
