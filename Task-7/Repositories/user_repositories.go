@@ -19,9 +19,9 @@ func NewMongoUserRepository(db *mongo.Database) *mongoUserRepository {
 }
 
 type UserRepository interface {
-    CreateUser(ctx context.Context, user *domain.User) (domain.User, error)
+    Register(ctx context.Context, user *domain.User) (domain.User, error)
     GetUserByID(ctx context.Context, id primitive.ObjectID) (domain.User, error)
-    GetUserByEmail(ctx context.Context, email string) (domain.User, error)
-    UpdateUser(ctx context.Context, id primitive.ObjectID, updatedUser *domain.User) (domain.User, error)
-    DeleteUser(ctx context.Context, id primitive.ObjectID) error
+    Login(ctx context.Context) error
 }
+
+

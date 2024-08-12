@@ -15,10 +15,10 @@ func InitRouter(tc *controllers.TaskController, uc *controllers.UserController, 
 	taskRoutes := r.Group("/tasks",)
 	{
 		taskRoutes.GET("/", tc.GetAllTasks)
-		// taskRoutes.GET("/:id", tc.GetTask)
-		// taskRoutes.POST("/", tc.AddTask)
-		// taskRoutes.PUT("/:id", tc.UpdateTask)
-		// taskRoutes.DELETE("/:id", tc.DeleteTask)
+		taskRoutes.GET("/:id", tc.GetTaskByID)
+		taskRoutes.POST("/", tc.AddTask)
+		taskRoutes.PUT("/:id", tc.UpdateTask)
+		taskRoutes.DELETE("/:id", tc.DeleteTask)
 	}
 
 	// Auth routes group

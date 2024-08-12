@@ -5,6 +5,8 @@ import (
 	"context"
 	"fmt"
 
+	// "log"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,7 +17,7 @@ type TaskRepository interface {
     GetAllTasks(ctx context.Context) ([]domain.Task, error)
     GetTaskByID(ctx context.Context, id primitive.ObjectID) (domain.Task, error)
     AddTask(ctx context.Context, task *domain.Task) (domain.Task, error)
-    UpdateTask(ctx context.Context, id primitive.ObjectID, updated_task *domain.Task) (domain.Task, error)
+    UpdateTask(ctx context.Context, id primitive.ObjectID, updatedTask *domain.Task) (domain.Task, error)
     DeleteTask(ctx context.Context, id primitive.ObjectID) error
 }
 
@@ -43,9 +45,10 @@ func (r *mongoTaskRepository) GetAllTasks(ctx context.Context) ([]domain.Task, e
         if err := cursor.Decode(&task); err != nil {
             return nil, err
         }
+        
         tasks = append(tasks, task)
     }
-	fmt.Println(tasks)
+	
     return tasks, cursor.Err()
 }
 
@@ -57,13 +60,46 @@ func (r *mongoTaskRepository) GetTaskByID(ctx context.Context, id primitive.Obje
 
 
 func (r *mongoTaskRepository) AddTask(ctx context.Context, task *domain.Task) (domain.Task, error) {
-	_, err := r.collection.InsertOne(ctx, task)
+    if task.ID != (primitive.ObjectID{}) {
+		return domain.Task{}, fmt.Errorf("task ID should be empty for new tasks")
+	}
+	insertResult, err := r.collection.InsertOne(ctx, task)
+    if err == nil{
+        task.ID = insertResult.InsertedID.(primitive.ObjectID)
+    }
 	return *task, err
 }
 
 func (r *mongoTaskRepository) UpdateTask(ctx context.Context, id primitive.ObjectID, updatedTask *domain.Task) (domain.Task, error) {
-	_, err := r.collection.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": updatedTask})
-	return *updatedTask, err
+    filter :=  bson.M{"_id": id}
+
+    updateFields := bson.D{}
+
+	if updatedTask.Title != "" {
+		updateFields = append(updateFields, bson.E{"title", updatedTask.Title})
+	}
+	if updatedTask.Description != "" {
+		updateFields = append(updateFields, bson.E{"description", updatedTask.Description})
+	}
+	if !updatedTask.DueDate.IsZero() {
+		updateFields = append(updateFields, bson.E{"due_date", updatedTask.DueDate})
+	}
+	if updatedTask.Status != "" {
+		updateFields = append(updateFields, bson.E{"status", updatedTask.Status})
+	}
+
+	_, err := r.collection.UpdateOne(ctx,filter, bson.M{"$set": updateFields})
+	if err != nil{
+        return domain.Task{}, fmt.Errorf("unable to update task")
+    }
+
+    var updatedTaskResult domain.Task
+	err = r.collection.FindOne(context.TODO(), filter).Decode(&updatedTaskResult)
+	if err != nil {
+		return domain.Task{}, fmt.Errorf("unable to retrieve updated task: %v", err)
+	}
+
+	return updatedTaskResult, nil
 }
 
 func (r *mongoTaskRepository) DeleteTask(ctx context.Context, id primitive.ObjectID) error {
