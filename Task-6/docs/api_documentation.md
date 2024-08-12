@@ -1,5 +1,3 @@
-Here's the updated API documentation incorporating the new implementations:
-
 # Task Management API Documentation
 
 ## Base URL
