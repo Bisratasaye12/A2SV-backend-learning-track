@@ -303,4 +303,4 @@ http://localhost:8080/api
 
 ## Postman API Documentation
 
-[Postman API Documentation]([https://documenter.getpostman.com/view/32287741/2sA3s1osMt](https://documenter.getpostman.com/view/32287741/2sA3s3HB9Y))
+[Postman API Documentation](https://documenter.getpostman.com/view/32287741/2sA3s3HB9Y))
