@@ -2,6 +2,7 @@ package routers
 
 import (
 	controllers "Task-7/Delivery/Controllers"
+	infrastructure "Task-7/Infrastructure"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,26 +13,25 @@ import (
 
 func InitRouter(tc *controllers.TaskController, uc *controllers.UserController, r *gin.Engine) {
 	// Task routes group
-	taskRoutes := r.Group("/tasks",)
+	taskRoutes := r.Group("/tasks", infrastructure.AuthMiddleware("user","admin"))
 	{
 		taskRoutes.GET("/", tc.GetAllTasks)
 		taskRoutes.GET("/:id", tc.GetTaskByID)
-		taskRoutes.POST("/", tc.AddTask)
-		taskRoutes.PUT("/:id", tc.UpdateTask)
-		taskRoutes.DELETE("/:id", tc.DeleteTask)
+		taskRoutes.POST("/", infrastructure.AuthMiddleware("admin"), tc.AddTask)
+		taskRoutes.PUT("/:id", infrastructure.AuthMiddleware("admin"), tc.UpdateTask)
+		taskRoutes.DELETE("/:id", infrastructure.AuthMiddleware("admin"), tc.DeleteTask)
 	}
 
 	// Auth routes group
-	// authRoutes := r.Group("/")
-	// {
-	// 	authRoutes.POST("/register", uc.Register)
-	// 	authRoutes.POST("/login", uc.Login)
-	// }
+	authRoutes := r.Group("/")
+	{
+		authRoutes.POST("/register", uc.Register)
+		authRoutes.POST("/login", uc.Login)
+	}
 
 	// User routes group
-	// userRoutes := r.Group("/users")
-	// {
-	// 	userRoutes.GET("/", uc.GetUsers)
-	// 	userRoutes.PUT("/promote/:id", uc.PromoteUser)
-	// }
+	userRoutes := r.Group("/users", infrastructure.AuthMiddleware("user", "admin"))
+	{
+		userRoutes.PUT("/promote/:id", infrastructure.AuthMiddleware("admin"), uc.PromoteUser)
+	}
 }

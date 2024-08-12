@@ -10,11 +10,9 @@ import (
 
 
 type UserUseCase interface {
-    Register(ctx context.Context, user *domain.User) error
+    Register(ctx context.Context, user *domain.User) (domain.User, error)
     Login(ctx context.Context, user *domain.User) (string, error)
     PromoteUser(ctx context.Context, id primitive.ObjectID) error
-    GetUserByID(ctx context.Context, id primitive.ObjectID) (domain.User, error)
-    GetUserByEmail(ctx context.Context, email string) (domain.User, error)
 }
 
 
@@ -27,3 +25,20 @@ func NewUserUseCase(userRepo repositories.UserRepository) *userUseCase {
         UserRepo: userRepo,
     }
 }   
+
+
+
+func (uc *userUseCase) Register(ctx context.Context, user *domain.User) (domain.User, error){
+    return uc.UserRepo.Register(ctx, user)
+}
+
+
+func (uc *userUseCase) Login(ctx context.Context, user *domain.User) (string, error){
+    return uc.UserRepo.Login(ctx, user)
+}
+
+
+
+func (uc *userUseCase) PromoteUser(ctx context.Context, id primitive.ObjectID) error{
+    return uc.UserRepo.PromoteUser(ctx, id)
+}

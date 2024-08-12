@@ -21,11 +21,11 @@ func main(){
 	taskRepository := repositories.NewMongoTaskRepository(dataBase)
 	taskUseCase := usecases.NewTaskUseCase(taskRepository)
 	TaskController := controllers.NewTaskController(taskUseCase)
-	// userRepository := repositories.NewMongoUserRepository(dataBase)
-	// userUseCase := usecases.NewUserUseCase(userRepository)
-	// UserController := controllers.NewUserController(userUseCase)
+	userRepo:= repositories.NewMongoUserRepository(dataBase)
+	userUseCase := usecases.NewUserUseCase(userRepo)
+	UserController := controllers.NewUserController(userUseCase)
 
-	routers.InitRouter(TaskController, nil, r)
+	routers.InitRouter(TaskController, UserController, r)
 	
 	r.Run("localhost:8080")
 }
