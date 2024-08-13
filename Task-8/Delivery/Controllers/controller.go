@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	domain "Task-7/Domain"
-	usecases "Task-7/UseCases"
+	domain "Task-8/Domain"
+	usecases "Task-8/UseCases"
 	"log"
 	"net/http"
 

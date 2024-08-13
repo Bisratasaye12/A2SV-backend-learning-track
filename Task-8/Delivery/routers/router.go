@@ -1,8 +1,8 @@
 package routers
 
 import (
-	controllers "Task-7/Delivery/Controllers"
-	infrastructure "Task-7/Infrastructure"
+	controllers "Task-8/Delivery/Controllers"
+	infrastructure "Task-8/Infrastructure"
 
 	"github.com/gin-gonic/gin"
 )

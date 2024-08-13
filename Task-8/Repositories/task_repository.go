@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"Task-7/Domain"
+	"Task-8/Domain"
 	"context"
 	"fmt"
 

@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"Task-7/Domain"
-	repositories "Task-7/Repositories"
+	"Task-8/Domain"
+	repositories "Task-8/Repositories"
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"

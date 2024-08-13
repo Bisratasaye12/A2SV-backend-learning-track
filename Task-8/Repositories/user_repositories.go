@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"Task-7/Domain"
-	infrastructure "Task-7/Infrastructure"
+	"Task-8/Domain"
+	infrastructure "Task-8/Infrastructure"
 	"context"
 	"fmt"
 	"log"
