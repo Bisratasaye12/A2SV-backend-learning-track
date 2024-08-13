@@ -2,7 +2,6 @@ package controllers
 
 import (
 	domain "Task-8/Domain"
-	usecases "Task-8/UseCases"
 	"log"
 	"net/http"
 
@@ -11,20 +10,20 @@ import (
 )
 
 type UserController struct {
-	UserUseCase usecases.UserUseCase
+	UserUseCase domain.UserUseCase
 }
 
 type TaskController struct {
-	TaskUseCase usecases.TaskUseCase
+	TaskUseCase domain.TaskUseCase
 }
 
-func NewUserController(userUseCase usecases.UserUseCase) *UserController{
+func NewUserController(userUseCase domain.UserUseCase) *UserController{
 	return &UserController{
 		UserUseCase: userUseCase,
 	}
 }
 
-func NewTaskController(taskUseCase usecases.TaskUseCase) *TaskController{
+func NewTaskController(taskUseCase domain.TaskUseCase) *TaskController{
 	return &TaskController{
 		TaskUseCase: taskUseCase,
 	}

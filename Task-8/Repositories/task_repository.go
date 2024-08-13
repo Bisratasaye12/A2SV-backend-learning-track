@@ -13,14 +13,6 @@ import (
 )
 
 
-type TaskRepository interface {
-    GetAllTasks(ctx context.Context) ([]domain.Task, error)
-    GetTaskByID(ctx context.Context, id primitive.ObjectID) (domain.Task, error)
-    AddTask(ctx context.Context, task *domain.Task) (domain.Task, error)
-    UpdateTask(ctx context.Context, id primitive.ObjectID, updatedTask *domain.Task) (domain.Task, error)
-    DeleteTask(ctx context.Context, id primitive.ObjectID) error
-}
-
 
 type mongoTaskRepository struct {
     collection *mongo.Collection
