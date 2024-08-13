@@ -1,6 +1,6 @@
 package domain
-
 import (
+	"context"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -25,5 +25,32 @@ type User struct {
 }
 
 
+type TaskRepository interface {
+    GetAllTasks(ctx context.Context) ([]Task, error)
+    GetTaskByID(ctx context.Context, id primitive.ObjectID) (Task, error)
+    AddTask(ctx context.Context, task *Task) (Task, error)
+    UpdateTask(ctx context.Context, id primitive.ObjectID, updatedTask *Task) (Task, error)
+    DeleteTask(ctx context.Context, id primitive.ObjectID) error
+}
 
 
+type TaskUseCase interface {
+    GetAllTasks(ctx context.Context) ([]Task, error)
+    GetTaskByID(ctx context.Context, id primitive.ObjectID) (Task, error)
+    AddTask(ctx context.Context, task *Task) (Task, error)
+    UpdateTask(ctx context.Context, id primitive.ObjectID, updatedTask *Task) (Task, error)
+    DeleteTask(ctx context.Context, id primitive.ObjectID) error
+}
+
+
+type UserRepository interface {
+    Register(ctx context.Context, user *User) (User, error)
+    Login(ctx context.Context, user *User) (string, error)
+	PromoteUser(ctx context.Context, id primitive.ObjectID) error
+}
+
+type UserUseCase interface {
+    Register(ctx context.Context, user *User) (User, error)
+    Login(ctx context.Context, user *User) (string, error)
+    PromoteUser(ctx context.Context, id primitive.ObjectID) error
+}

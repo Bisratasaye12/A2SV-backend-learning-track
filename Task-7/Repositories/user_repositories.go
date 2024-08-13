@@ -23,12 +23,6 @@ func NewMongoUserRepository(db *mongo.Database) *mongoUserRepository {
 	}
 }
 
-type UserRepository interface {
-    Register(ctx context.Context, user *domain.User) (domain.User, error)
-    Login(ctx context.Context, user *domain.User) (string, error)
-	PromoteUser(ctx context.Context, id primitive.ObjectID) error
-}
-
 
 func (ur mongoUserRepository) Register(ctx context.Context, user *domain.User) (domain.User, error){
 	if user.Username == "" || user.Password == "" {
