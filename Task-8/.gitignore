@@ -1,0 +1,46 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Output of the go coverage tool
+*.out
+
+# Logs
+logs
+*.log
+
+# Dependency directories
+vendor/
+node_modules/
+
+# Environment variables
+.env
+
+# Air live reloading
+.air.toml
+tmp/
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Go build artifacts
+*.o
+*.a
+*.out
+*.test
+
+# Go workspace file
+go.work
+go.work.sum
+
+# MongoDB data files
+*.bson
+*.json

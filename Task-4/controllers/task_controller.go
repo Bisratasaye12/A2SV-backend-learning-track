@@ -32,6 +32,7 @@ func GetTasks(c *gin.Context){
 	tasks, err := data.GetTasks()
 	if err != nil{
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message" : "No available Tasks"})
+		return
 	}
 	c.IndentedJSON(http.StatusOK, gin.H{"tasks": tasks})
 }
@@ -46,6 +47,7 @@ func GetTask( c *gin.Context){
 	task, err := data.GetTask(id)
 	if err != nil{
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Task Not Found"})
+		return 
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{"task": task})
@@ -61,6 +63,7 @@ func AddTask(c *gin.Context){
 	newTask.ID = giveId()
 	if err := c.ShouldBindJSON(&newTask); err != nil{
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Bad Request"})
+		return
 	}
 
 	data.AddTask(newTask)
@@ -78,6 +81,7 @@ func UpdateTask(c *gin.Context){
 	var updated_task models.Task
 	if err := c.ShouldBindJSON(&updated_task); err != nil{
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Bad Request"})
+		return
 	}
 
 	updated_task, err := data.UpdateTask(id, updated_task)
