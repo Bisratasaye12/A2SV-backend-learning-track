@@ -5,7 +5,6 @@ import (
 	infrastructure "Task-8/Infrastructure"
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -29,7 +28,7 @@ func (ur mongoUserRepository) Register(ctx context.Context, user *domain.User) (
 		return domain.User{},fmt.Errorf("missing required fields")
 	}
 
-	existingUser := ur.collection.FindOne(context.TODO(), bson.D{{"username", user.Username}})
+	existingUser := ur.collection.FindOne(context.TODO(), bson.D{{Key: "username", Value: user.Username}})
 	if existingUser.Err() != mongo.ErrNoDocuments {
 		return domain.User{},fmt.Errorf("username already in use")
 	}
@@ -56,7 +55,7 @@ func (ur mongoUserRepository) Register(ctx context.Context, user *domain.User) (
 	if err != nil{
 		return domain.User{}, fmt.Errorf("unable to register")
 	}
-	log.Println("from user repo:", user)
+	
 	user.ID = insertResult.InsertedID.(primitive.ObjectID)
 	return *user, nil
 }
@@ -64,7 +63,7 @@ func (ur mongoUserRepository) Register(ctx context.Context, user *domain.User) (
 
 func (uc *mongoUserRepository) Login(ctx context.Context, user *domain.User) (string, error){
 	var existingUser domain.User
-	err := uc.collection.FindOne(context.TODO(), bson.D{{"username", user.Username}}).Decode(&existingUser)
+	err := uc.collection.FindOne(context.TODO(), bson.D{{Key: "username", Value: user.Username}}).Decode(&existingUser)
 	if err != nil {
 		return "", fmt.Errorf("invalid username or password")
 	}
@@ -73,7 +72,7 @@ func (uc *mongoUserRepository) Login(ctx context.Context, user *domain.User) (st
 
 
 func (uc *mongoUserRepository) PromoteUser(ctx context.Context, id primitive.ObjectID) error {
-	filter := bson.D{{"_id", id}}
+	filter := bson.D{{Key: "_id", Value: id}}
 	update := bson.M{"$set": bson.M{"role": "admin"}}
 
 	_, err := uc.collection.UpdateOne(context.TODO(), filter, update)

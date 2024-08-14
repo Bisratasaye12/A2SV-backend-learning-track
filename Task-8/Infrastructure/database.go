@@ -28,11 +28,5 @@ func InitDB(uri string) {
 
 	MongoClient = client
 
-	// ping
-	err = client.Ping(context.Background(), nil)
-	if err != nil {
-		log.Fatal("Failed to ping MongoDB:", err)
-	}
-	log.Println("Connected to MongoDB!")
 	Database = client.Database("Task_management")
 }
