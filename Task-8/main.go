@@ -15,13 +15,13 @@ var(
 )
 func init(){
 	infra = infrastructure.NewInfrastructure()
-	infra.InitDB("mongodb://localhost:27017")
+	
 }
 
 func main(){
 	r := gin.Default()
 
-	dataBase := infra.Database
+	dataBase := infrastructure.InitDB("mongodb://localhost:27017")
 	taskRepository := repositories.NewMongoTaskRepository(dataBase)
 	taskUseCase := usecases.NewTaskUseCase(taskRepository)
 	TaskController := controllers.NewTaskController(taskUseCase)

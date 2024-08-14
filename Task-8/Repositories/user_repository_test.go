@@ -2,7 +2,8 @@ package repositories
 
 import (
 	domain "Task-8/Domain"
-	infrastructure "Task-8/Infrastructure"
+	infrastructure_pack "Task-8/Infrastructure"
+	mocks "Task-8/Mocks"
 	"context"
 	"os"
 
@@ -13,8 +14,9 @@ import (
 type UserRepositorySuite struct{
 	suite.Suite
 
-	repository *mongoUserRepository
-	db_cleaner *DB_Cleanup
+	repository 		*mongoUserRepository
+	db_cleaner 		*DB_Cleanup
+	infrastructure  *mocks.Infrastructure
 }
 
 
@@ -24,9 +26,8 @@ func (suite *UserRepositorySuite) SetupSuite(){
 	
     
     uri := os.Getenv("MONGODB_URI")
+	db := infrastructure_pack.InitDB(uri)
 	
-	infrastructure.InitDB(uri)
-	db := infrastructure.Database
 	cleaner := InitCleanupDB(db, "test-users")
 
 	suite.repository = &mongoUserRepository{db.Collection("test-users")}

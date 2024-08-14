@@ -2,8 +2,10 @@ package repositories
 
 import (
 	domain "Task-8/Domain"
-	infrastructure "Task-8/Infrastructure"
+	infrastructure_pack "Task-8/Infrastructure"
+	mocks "Task-8/Mocks"
 	"context"
+	"log"
 	"os"
 
 	"testing"
@@ -17,10 +19,10 @@ import (
 
 type TaskRepositorySuite struct{
 	suite.Suite
-	repository *mongoTaskRepository
-	db_cleaner *DB_Cleanup
+	repository 		*mongoTaskRepository
+	db_cleaner 		*DB_Cleanup
+	infrastructure  *mocks.Infrastructure
 }
-
 
 func (suite *TaskRepositorySuite) SetupSuite(){
     err := godotenv.Load("../.env")
@@ -28,8 +30,8 @@ func (suite *TaskRepositorySuite) SetupSuite(){
     
     uri := os.Getenv("MONGODB_URI")
 	
-	infrastructure.InitDB(uri)
-	db := infrastructure.Database
+	db := infrastructure_pack.InitDB(uri)
+	log.Println("DB: ", db)
 	testTaskRepo := &mongoTaskRepository{collection: db.Collection("test-tasks")}
 	cleaner := InitCleanupDB(db, "test-tasks")
 

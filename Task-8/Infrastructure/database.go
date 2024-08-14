@@ -21,7 +21,7 @@ func NewInfrastructure() *Infrastruct {
 	}
 }
 
-func (i *Infrastruct) InitDB(uri string) {
+func InitDB(uri string) *mongo.Database {
 	clientOptions := options.Client().ApplyURI(uri)
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -34,7 +34,6 @@ func (i *Infrastruct) InitDB(uri string) {
 		log.Fatal("Failed to ping MongoDB:", err)
 	}
 
-	i.MongoClient = client
 
 	// ping
 	err = client.Ping(context.Background(), nil)
@@ -42,5 +41,6 @@ func (i *Infrastruct) InitDB(uri string) {
 		log.Fatal("Failed to ping MongoDB:", err)
 	}
 	log.Println("Connected to MongoDB!")
-	i.Database = client.Database("Task_management")
+	Database := client.Database("Task_management")
+	return Database
 }
