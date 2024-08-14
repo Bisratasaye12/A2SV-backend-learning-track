@@ -44,8 +44,9 @@ type TaskUseCase interface {
 
 
 type UserRepository interface {
+	NoUsers(ctx context.Context) (bool, error)
     Register(ctx context.Context, user *User) (User, error)
-    Login(ctx context.Context, user *User) (string, error)
+    Login(ctx context.Context, username string) (*User, error)
 	PromoteUser(ctx context.Context, id primitive.ObjectID) error
 }
 
@@ -53,4 +54,10 @@ type UserUseCase interface {
     Register(ctx context.Context, user *User) (User, error)
     Login(ctx context.Context, user *User) (string, error)
     PromoteUser(ctx context.Context, id primitive.ObjectID) error
+}
+
+type Infrastructure interface {
+	AuthMiddleware(requiredRoles ...string) interface{}
+	EncryptPassword(password string) (string, error)
+	JWT_Auth(existingUser *User, user *User) (string, error)
 }

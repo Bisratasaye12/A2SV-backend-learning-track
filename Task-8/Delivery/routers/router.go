@@ -11,7 +11,7 @@ import (
 // Parameters:
 //   - r: The Gin engine to configure with routes.
 
-func InitRouter(tc *controllers.TaskController, uc *controllers.UserController, r *gin.Engine) {
+func InitRouter(tc *controllers.TaskController, uc *controllers.UserController, r *gin.Engine, infrastructure *infrastructure.Infrastruct) {
 	// Task routes group
 	taskRoutes := r.Group("/tasks", infrastructure.AuthMiddleware("user","admin"))
 	{

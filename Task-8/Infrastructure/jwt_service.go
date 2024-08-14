@@ -12,7 +12,7 @@ import (
 
 
 
-func JWT_Auth(existingUser *domain.User, user *domain.User) (string, error){
+func (i *Infrastruct) JWT_Auth(existingUser *domain.User, user *domain.User) (string, error){
 	var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 	err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password))
 	if err != nil {

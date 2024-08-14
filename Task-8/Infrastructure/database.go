@@ -8,12 +8,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
-	MongoClient *mongo.Client
-	Database    *mongo.Database
-)
+type Infrastruct struct{
+	MongoClient 	*mongo.Client
+	Database    	*mongo.Database
+}
 
-func InitDB(uri string) {
+
+func NewInfrastructure() *Infrastruct {
+	return &Infrastruct{
+		MongoClient: nil,
+		Database: nil,
+	}
+}
+
+func (i *Infrastruct) InitDB(uri string) {
 	clientOptions := options.Client().ApplyURI(uri)
 
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -26,7 +34,13 @@ func InitDB(uri string) {
 		log.Fatal("Failed to ping MongoDB:", err)
 	}
 
-	MongoClient = client
+	i.MongoClient = client
 
-	Database = client.Database("Task_management")
+	// ping
+	err = client.Ping(context.Background(), nil)
+	if err != nil {
+		log.Fatal("Failed to ping MongoDB:", err)
+	}
+	log.Println("Connected to MongoDB!")
+	i.Database = client.Database("Task_management")
 }
