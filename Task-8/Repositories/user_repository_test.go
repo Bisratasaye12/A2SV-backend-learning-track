@@ -9,6 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/suite"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserRepositorySuite struct{
@@ -36,6 +37,13 @@ func (suite *UserRepositorySuite) SetupSuite(){
 
 func (suite *UserRepositorySuite) TearDownSuite(){
 	suite.db_cleaner.CleanUp("test-users")
+}
+
+
+func (suite *UserRepositorySuite) TestNoUsers_Positive(){
+	noUsers, err := suite.repository.NoUsers(context.TODO())
+	suite.NoError(err, "no error on valid input")
+	suite.True(noUsers, "no users in the database")
 }
 
 func (suite *UserRepositorySuite) TestRegister_Positive(){
@@ -88,7 +96,80 @@ func (suite *UserRepositorySuite) TestRegister_Negative(){
 }
 
 
-func (suite *UserRepositorySuite) Login(){
-	
+func (suite *UserRepositorySuite) TestLogin_Positive(){
+	test_user := &domain.User{
+		Username: "test-user",
+		Email: "test-user@gmail.com",
+		Password: "12345678",
+	}
+
+	regUser, err := suite.repository.Register(context.TODO(), test_user)
+	suite.NoError(err, "no error on valid input")
+
+	user, err := suite.repository.Login(context.TODO(), regUser.Username)
+	suite.NoError(err, "no error in logging a valid user")
+	suite.NotEmpty(user)
+	suite.Equal(regUser.Username, user.Username)
+
 }
 
+func (suite *UserRepositorySuite) TestLogin_Negative() {
+	
+	nonExistentUsername := "non-existent-user"
+	user, err := suite.repository.Login(context.TODO(), nonExistentUsername)
+	suite.Error(err, "error expected when logging in with a non-existent username")
+	suite.Empty(user, "returned user should be empty")
+
+	test_user := &domain.User{
+		Username: "test-user",
+		Email:    "test-user@gmail.com",
+		Password: "12345678",
+	}
+
+	_, err = suite.repository.Register(context.TODO(), test_user)
+	suite.NoError(err, "no error on registering a valid user")
+
+	incorrectPasswordUser := &domain.User{
+		Username: "test-user",
+		Password: "wrong-password",
+	}
+
+	user, err = suite.repository.Login(context.TODO(), incorrectPasswordUser.Username)
+	suite.Error(err, "error expected when logging in with incorrect password")
+	suite.Empty(user, "returned user should be empty")
+}
+
+
+func (suite *UserRepositorySuite) TestPromoteUser_Positive(){
+	test_user := &domain.User{
+		Username: "test-user",
+		Email: "test-user@gmail.com",
+		Password: "12345678",
+	}
+
+	regUser, err := suite.repository.Register(context.TODO(), test_user)
+	suite.NoError(err, "no error on valid input")
+
+	err = suite.repository.PromoteUser(context.TODO(), regUser.ID)
+	suite.NoError(err, "no error on promoting a user to admin")
+	suite.Equal("admin", regUser.Role)
+}
+
+func (suite *UserRepositorySuite) TestPromoteUser_Negative(){
+	test_user := &domain.User{
+		Username: "test-user",
+		Email: "test-user@gmail.com",
+		Password: "12345678",
+	}
+
+	regUser, err := suite.repository.Register(context.TODO(), test_user)
+	suite.NoError(err, "no error on valid input")
+	
+	invalidID := primitive.ObjectID{}
+	err = suite.repository.PromoteUser(context.TODO(), invalidID)
+	suite.Error(err, "error expected when promoting a user with an invalid ID")
+
+	err = suite.repository.PromoteUser(context.TODO(), regUser.ID)
+	suite.NoError(err, "no error on promoting a user to admin")
+	suite.NotEqual("user", regUser.Role)
+}
