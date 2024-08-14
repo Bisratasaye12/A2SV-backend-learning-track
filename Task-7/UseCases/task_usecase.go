@@ -2,9 +2,11 @@
 package usecases
 
 import (
-    "context"
-    "Task-7/Domain"
-    "go.mongodb.org/mongo-driver/bson/primitive"
+	"Task-7/Domain"
+	"context"
+	"fmt"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 
@@ -32,6 +34,9 @@ func (tu *taskUseCase) GetTaskByID(ctx context.Context, id primitive.ObjectID) (
 
 
 func (tu *taskUseCase) AddTask(ctx context.Context, task *domain.Task) (domain.Task, error) {
+    if task.Title == "" || task.Description == ""{
+        return domain.Task{}, fmt.Errorf("task title and description cannot be empty")
+    }
     return tu.TaskRepo.AddTask(ctx, task)
 }
 

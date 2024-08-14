@@ -10,22 +10,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var(
+	infra *infrastructure.Infrastruct
+)
 func init(){
-	infrastructure.InitDB("mongodb://localhost:27017")
+	infra = infrastructure.NewInfrastructure()
+	infra.InitDB("mongodb://localhost:27017")
 }
 
 func main(){
 	r := gin.Default()
 
-	dataBase := infrastructure.Database
+	dataBase := infra.Database
 	taskRepository := repositories.NewMongoTaskRepository(dataBase)
 	taskUseCase := usecases.NewTaskUseCase(taskRepository)
 	TaskController := controllers.NewTaskController(taskUseCase)
 	userRepo:= repositories.NewMongoUserRepository(dataBase)
-	userUseCase := usecases.NewUserUseCase(userRepo)
+	userUseCase := usecases.NewUserUseCase(userRepo, infra)
 	UserController := controllers.NewUserController(userUseCase)
 
-	routers.InitRouter(TaskController, UserController, r)
+	routers.InitRouter(TaskController, UserController, r, infra)
 	
 	r.Run("localhost:8080")
 }

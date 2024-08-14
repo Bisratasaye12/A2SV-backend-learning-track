@@ -68,16 +68,16 @@ func (r *mongoTaskRepository) UpdateTask(ctx context.Context, id primitive.Objec
     updateFields := bson.D{}
 
 	if updatedTask.Title != "" {
-		updateFields = append(updateFields, bson.E{"title", updatedTask.Title})
+		updateFields = append(updateFields, bson.E{Key: "title", Value: updatedTask.Title})
 	}
 	if updatedTask.Description != "" {
-		updateFields = append(updateFields, bson.E{"description", updatedTask.Description})
+		updateFields = append(updateFields, bson.E{Key: "description", Value: updatedTask.Description})
 	}
 	if !updatedTask.DueDate.IsZero() {
-		updateFields = append(updateFields, bson.E{"due_date", updatedTask.DueDate})
+		updateFields = append(updateFields, bson.E{Key: "due_date", Value: updatedTask.DueDate})
 	}
 	if updatedTask.Status != "" {
-		updateFields = append(updateFields, bson.E{"status", updatedTask.Status})
+		updateFields = append(updateFields, bson.E{Key: "status", Value: updatedTask.Status})
 	}
 
 	_, err := r.collection.UpdateOne(ctx,filter, bson.M{"$set": updateFields})
