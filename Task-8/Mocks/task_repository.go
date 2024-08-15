@@ -6,6 +6,7 @@ import (
 	domain "Task-8/Domain"
 	context "context"
 
+
 	mock "github.com/stretchr/testify/mock"
 
 	primitive "go.mongodb.org/mongo-driver/bson/primitive"
@@ -66,12 +67,14 @@ func (_m *TaskRepository) DeleteTask(ctx context.Context, id primitive.ObjectID)
 func (_m *TaskRepository) GetAllTasks(ctx context.Context) ([]domain.Task, error) {
 	ret := _m.Called(ctx)
 
+
 	if len(ret) == 0 {
 		panic("no return value specified for GetAllTasks")
 	}
 
 	var r0 []domain.Task
 	var r1 error
+	
 	if rf, ok := ret.Get(0).(func(context.Context) ([]domain.Task, error)); ok {
 		return rf(ctx)
 	}
@@ -88,7 +91,6 @@ func (_m *TaskRepository) GetAllTasks(ctx context.Context) ([]domain.Task, error
 	} else {
 		r1 = ret.Error(1)
 	}
-
 	return r0, r1
 }
 

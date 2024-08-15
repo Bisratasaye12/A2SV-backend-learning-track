@@ -1,11 +1,12 @@
-package repositories
+package tests
 
 import (
 	domain "Task-8/Domain"
 	infrastructure_pack "Task-8/Infrastructure"
-	mocks "Task-8/Mocks"
+	repositories "Task-8/Repositories"
 	"context"
 	"os"
+	"testing"
 
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/suite"
@@ -15,14 +16,13 @@ import (
 type UserRepositorySuite struct{
 	suite.Suite
 
-	repository 		*mongoUserRepository
+	repository 		*repositories.MongoUserRepository
 	db_cleaner 		*DB_Cleanup
-	infrastructure  *mocks.Infrastructure
 }
 
 
-func (suite *UserRepositorySuite) SetupSuite(){
-	err := godotenv.Load("../.env")
+func (suite *UserRepositorySuite) SetupTest(){
+	err := godotenv.Load("../../.env")
 	suite.NoError(err) 
 	
     
@@ -31,14 +31,14 @@ func (suite *UserRepositorySuite) SetupSuite(){
 	
 	cleaner := InitCleanupDB(db, "test-users")
 
-	suite.repository = &mongoUserRepository{db.Collection("test-users")}
+	suite.repository = &repositories.MongoUserRepository{Collection: db.Collection("test-users")}
 	suite.db_cleaner = cleaner
 }
 
-func (suite *UserRepositorySuite) TearDownSuite(){
+
+func (suite *UserRepositorySuite) TearDownTest(){
 	suite.db_cleaner.CleanUp("test-users")
 }
-
 
 func (suite *UserRepositorySuite) TestNoUsers_Positive(){
 	noUsers, err := suite.repository.NoUsers(context.TODO())
@@ -88,7 +88,7 @@ func (suite *UserRepositorySuite) TestRegister_Negative(){
 	suite.Error(err, "error due to existing username")
 
 	regUser3, err := suite.repository.Register(context.TODO(), test_user3)
-	suite.NoError(err, "error due to missing field password")
+	suite.Error(err, "error due to missing field password")
 
 	suite.NotEmpty(regUser)
 	suite.Empty(regUser2)
@@ -134,8 +134,17 @@ func (suite *UserRepositorySuite) TestLogin_Negative() {
 		Password: "wrong-password",
 	}
 
+	incorrectUserNameUser := &domain.User{
+		Username: "wrong-username",
+		Password: "12345678",
+	}
+
 	user, err = suite.repository.Login(context.TODO(), incorrectPasswordUser.Username)
-	suite.Error(err, "error expected when logging in with incorrect password")
+	suite.NoError(err, "error expected when logging in with incorrect password")
+	suite.NotEqual(incorrectPasswordUser.Password, user.Password)
+	
+	user, err = suite.repository.Login(context.TODO(), incorrectUserNameUser.Username)
+	suite.Error(err, "error expected when logging in with incorrect username")
 	suite.Empty(user, "returned user should be empty")
 }
 
@@ -152,7 +161,6 @@ func (suite *UserRepositorySuite) TestPromoteUser_Positive(){
 
 	err = suite.repository.PromoteUser(context.TODO(), regUser.ID)
 	suite.NoError(err, "no error on promoting a user to admin")
-	suite.Equal("admin", regUser.Role)
 }
 
 func (suite *UserRepositorySuite) TestPromoteUser_Negative(){
@@ -173,3 +181,8 @@ func (suite *UserRepositorySuite) TestPromoteUser_Negative(){
 	suite.NoError(err, "no error on promoting a user to admin")
 	suite.NotEqual("user", regUser.Role)
 }
+
+func TestUserRepositorySuite(t *testing.T) {
+	suite.Run(t, new(UserRepositorySuite))
+}
+

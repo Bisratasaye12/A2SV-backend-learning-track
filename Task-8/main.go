@@ -10,17 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var(
-	infra *infrastructure.Infrastruct
-)
-func init(){
-	infra = infrastructure.NewInfrastructure()
-	
-}
+
 
 func main(){
 	r := gin.Default()
-
+	infra := infrastructure.NewInfrastructure()
 	dataBase := infrastructure.InitDB("mongodb://localhost:27017")
 	taskRepository := repositories.NewMongoTaskRepository(dataBase)
 	taskUseCase := usecases.NewTaskUseCase(taskRepository)

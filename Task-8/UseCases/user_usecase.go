@@ -2,9 +2,7 @@ package usecases
 
 import (
 	"Task-8/Domain"
-	infrastructure "Task-8/Infrastructure"
 	"context"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,24 +12,24 @@ import (
 
 
 
-type userUseCase struct {
+type Userusecase struct {
     UserRepo domain.UserRepository
-    infra    *infrastructure.Infrastruct
+    Infra    domain.Infrastructure
 }
 
-func NewUserUseCase(userRepo domain.UserRepository, infra *infrastructure.Infrastruct) *userUseCase {
-    return &userUseCase{
+func NewUserUseCase(userRepo domain.UserRepository, infra domain.Infrastructure) *Userusecase {
+    return &Userusecase{
         UserRepo: userRepo,
-        infra:   infra,
+        Infra:   infra,
+        
     }
 }   
 
 
 
-func (uc *userUseCase) Register(ctx context.Context, user *domain.User) (domain.User, error){
+func (uc *Userusecase) Register(ctx context.Context, user *domain.User) (domain.User, error){
     var err error
-    log.Println("FROM REGISTER USER_USECASES: ",user.Password)
-	user.Password, err = uc.infra.EncryptPassword(user.Password)
+	user.Password, err = uc.Infra.EncryptPassword(user.Password)
     
 	if err != nil{
 		return domain.User{}, err
@@ -49,20 +47,31 @@ func (uc *userUseCase) Register(ctx context.Context, user *domain.User) (domain.
         user.Role = "user"
     }
 
-    return uc.UserRepo.Register(ctx, user)
+    ret_user, err := uc.UserRepo.Register(ctx, user)
+
+    if err != nil{
+        return domain.User{}, err
+    }
+    ret_user.CreatedAt = user.CreatedAt
+    ret_user.Role = user.Role
+    ret_user.Password = user.Password
+    return ret_user, nil
 }
 
 
-func (uc *userUseCase) Login(ctx context.Context, user *domain.User) (string, error){
+func (uc *Userusecase) Login(ctx context.Context, user *domain.User) (string, error){
     exsUser, err := uc.UserRepo.Login(ctx, user.Username)
     if err != nil{
         return "", err
     }
-    return uc.infra.JWT_Auth(exsUser, user)
+    ret_token, err := uc.Infra.JWT_Auth(exsUser, user)
+
+    return ret_token, err
+
 }
 
 
 
-func (uc *userUseCase) PromoteUser(ctx context.Context, id primitive.ObjectID) error{
+func (uc *Userusecase) PromoteUser(ctx context.Context, id primitive.ObjectID) error{
     return uc.UserRepo.PromoteUser(ctx, id)
 }

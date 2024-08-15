@@ -1,4 +1,3 @@
-// usecases/task_usecases.go
 package usecases
 
 import (
@@ -11,40 +10,45 @@ import (
 
 
 
-type taskUseCase struct {
+type Taskusecase struct {
     TaskRepo domain.TaskRepository
 }
 
 
 func NewTaskUseCase(taskRepo domain.TaskRepository) domain.TaskUseCase {
-    return &taskUseCase{
+    return &Taskusecase{
         TaskRepo: taskRepo,
     }
 }
 
 
-func (tu *taskUseCase) GetAllTasks(ctx context.Context) ([]domain.Task, error) {
-    return tu.TaskRepo.GetAllTasks(ctx)
+func (tu *Taskusecase) GetAllTasks(ctx context.Context) ([]domain.Task, error) {
+    ret, err := tu.TaskRepo.GetAllTasks(ctx)
+    return ret, err
 }
 
 
-func (tu *taskUseCase) GetTaskByID(ctx context.Context, id primitive.ObjectID) (domain.Task, error) {
-    return tu.TaskRepo.GetTaskByID(ctx, id)
+func (tu *Taskusecase) GetTaskByID(ctx context.Context, id primitive.ObjectID) (domain.Task, error) {
+    ret, err := tu.TaskRepo.GetTaskByID(ctx, id)
+    return ret, err
 }
 
 
-func (tu *taskUseCase) AddTask(ctx context.Context, task *domain.Task) (domain.Task, error) {
+func (tu *Taskusecase) AddTask(ctx context.Context, task *domain.Task) (domain.Task, error) {
     if task.Title == "" || task.Description == ""{
         return domain.Task{}, fmt.Errorf("task title and description cannot be empty")
     }
-    return tu.TaskRepo.AddTask(ctx, task)
+    ret, err := tu.TaskRepo.AddTask(ctx, task)
+    return ret, err
 }
 
 
-func (tu *taskUseCase) UpdateTask(ctx context.Context, id primitive.ObjectID, updatedTask *domain.Task) (domain.Task, error) {
-    return tu.TaskRepo.UpdateTask(ctx, id, updatedTask)
+func (tu *Taskusecase) UpdateTask(ctx context.Context, id primitive.ObjectID, updatedTask *domain.Task) (domain.Task, error) {
+    ret, err := tu.TaskRepo.UpdateTask(ctx, id, updatedTask)
+    return ret, err
 }
 
-func (tu *taskUseCase) DeleteTask(ctx context.Context, id primitive.ObjectID) error {
-    return tu.TaskRepo.DeleteTask(ctx, id)
+func (tu *Taskusecase) DeleteTask(ctx context.Context, id primitive.ObjectID) error {
+    err := tu.TaskRepo.DeleteTask(ctx, id)
+    return err
 }

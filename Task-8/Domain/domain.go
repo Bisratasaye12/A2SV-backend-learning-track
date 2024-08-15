@@ -1,8 +1,10 @@
 package domain
+
 import (
 	"context"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -57,7 +59,7 @@ type UserUseCase interface {
 }
 
 type Infrastructure interface {
-	AuthMiddleware(requiredRoles ...string) interface{}
+	AuthMiddleware(requiredRoles ...string) gin.HandlerFunc
 	EncryptPassword(password string) (string, error)
 	JWT_Auth(existingUser *User, user *User) (string, error)
 }

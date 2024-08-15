@@ -1,9 +1,9 @@
-package repositories
+package tests
 
 import (
 	domain "Task-8/Domain"
 	infrastructure_pack "Task-8/Infrastructure"
-	mocks "Task-8/Mocks"
+	repositories "Task-8/Repositories"
 	"context"
 	"log"
 	"os"
@@ -19,35 +19,29 @@ import (
 
 type TaskRepositorySuite struct{
 	suite.Suite
-	repository 		*mongoTaskRepository
+	repository 		*repositories.MongoTaskRepository
 	db_cleaner 		*DB_Cleanup
-	infrastructure  *mocks.Infrastructure
 }
 
-func (suite *TaskRepositorySuite) SetupSuite(){
-    err := godotenv.Load("../.env")
+func (suite *TaskRepositorySuite) SetupTest(){
+    err := godotenv.Load("../../.env")
 	suite.NoError(err) 
     
     uri := os.Getenv("MONGODB_URI")
 	
 	db := infrastructure_pack.InitDB(uri)
 	log.Println("DB: ", db)
-	testTaskRepo := &mongoTaskRepository{collection: db.Collection("test-tasks")}
+	testTaskRepo := &repositories.MongoTaskRepository{Collection: db.Collection("test-tasks")}
 	cleaner := InitCleanupDB(db, "test-tasks")
 
 	suite.repository = testTaskRepo
 	suite.db_cleaner = cleaner
 }
 
-
-// func (suite *TaskRepositorySuite) TearDownTest(){
-// 	defer suite.db_cleaner.CleanUp("test-tasks")
-// }
-
-
-func (suite *TaskRepositorySuite) TearDownSuite(){
+func (suite *TaskRepositorySuite) TearDownTest(){
 	defer suite.db_cleaner.CleanUp("test-tasks")
 }
+
 
 func (suite *TaskRepositorySuite) TestAddTask_Positive() {
 	newTask := &domain.Task{

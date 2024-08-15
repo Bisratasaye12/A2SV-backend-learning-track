@@ -1,6 +1,6 @@
 module Task-8
 
-go 1.22.6
+go 1.23.0
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

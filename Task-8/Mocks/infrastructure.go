@@ -5,6 +5,8 @@ package mocks
 import (
 	domain "Task-8/Domain"
 
+	gin "github.com/gin-gonic/gin"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -14,7 +16,7 @@ type Infrastructure struct {
 }
 
 // AuthMiddleware provides a mock function with given fields: requiredRoles
-func (_m *Infrastructure) AuthMiddleware(requiredRoles ...string) interface{} {
+func (_m *Infrastructure) AuthMiddleware(requiredRoles ...string) gin.HandlerFunc {
 	_va := make([]interface{}, len(requiredRoles))
 	for _i := range requiredRoles {
 		_va[_i] = requiredRoles[_i]
@@ -27,12 +29,12 @@ func (_m *Infrastructure) AuthMiddleware(requiredRoles ...string) interface{} {
 		panic("no return value specified for AuthMiddleware")
 	}
 
-	var r0 interface{}
-	if rf, ok := ret.Get(0).(func(...string) interface{}); ok {
+	var r0 gin.HandlerFunc
+	if rf, ok := ret.Get(0).(func(...string) gin.HandlerFunc); ok {
 		r0 = rf(requiredRoles...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(interface{})
+			r0 = ret.Get(0).(gin.HandlerFunc)
 		}
 	}
 
