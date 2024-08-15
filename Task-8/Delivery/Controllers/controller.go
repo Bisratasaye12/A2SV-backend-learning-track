@@ -50,7 +50,9 @@ func (tc *TaskController) GetTaskByID(c *gin.Context){
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid id", "error": err.Error()})
 		return 
 	}
+
 	task, err := tc.TaskUseCase.GetTaskByID(c.Request.Context(), taskID)
+
 	if err != nil{
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "unable to fetch task", "error": err.Error()})
 		return
@@ -114,7 +116,7 @@ func (tc *TaskController) DeleteTask(c *gin.Context){
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "unable to delete task", "error": err.Error()})
 		return 
 	}
-	c.IndentedJSON(http.StatusNoContent, gin.H{"message": "Task Deleted Successfully!"})
+	c.IndentedJSON(http.StatusNoContent, gin.H{})
 }
 
 

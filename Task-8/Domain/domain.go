@@ -44,6 +44,13 @@ type TaskUseCase interface {
     DeleteTask(ctx context.Context, id primitive.ObjectID) error
 }
 
+type TaskController interface {
+	GetAllTasks(c *gin.Context)
+	GetTaskByID(c *gin.Context)
+	AddTask(c *gin.Context)
+	UpdateTask(c *gin.Context)
+	DeleteTask(c *gin.Context)
+}
 
 type UserRepository interface {
 	NoUsers(ctx context.Context) (bool, error)
@@ -56,6 +63,12 @@ type UserUseCase interface {
     Register(ctx context.Context, user *User) (User, error)
     Login(ctx context.Context, user *User) (string, error)
     PromoteUser(ctx context.Context, id primitive.ObjectID) error
+}
+
+type UserController interface {
+	Register(c *gin.Context)
+	Login(c *gin.Context)
+	PromoteUser(c *gin.Context)
 }
 
 type Infrastructure interface {
