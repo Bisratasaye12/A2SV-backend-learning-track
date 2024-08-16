@@ -19,16 +19,16 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.23.0' # Replace with your Go version
+          go-version: '1.22.0' # Replace with your Go version
 
       - name: Install dependencies
-        working-directory: ./task-8
+        working-directory: ./Task-8
         run: go mod download
 
       - name: Run Task 8 Controller Tests
-        working-directory: ./task-8
+        working-directory: ./Task-8
         run: go test ./tests/controller_tests/...
 
       - name: Run Task 8 Use Case Tests
-        working-directory: ./task-8
+        working-directory: ./Task-8
         run: go test ./tests/usecase_tests/...
