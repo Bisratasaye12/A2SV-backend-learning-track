@@ -1,43 +1,34 @@
-name: CI
+name: Run Task 8 Controller and Use Case Tests
 
 on:
   push:
     branches:
-      - main
+      - main  # Adjust to the branch you want to track
   pull_request:
     branches:
-      - main
+      - main  # Adjust as necessary
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Check out the repository
+        uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: '1.20'  # or any Go version you are using
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23.0' # Replace with your Go version
 
-    - name: Cache Go modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
+      - name: Install dependencies
+        working-directory: ./task-8
+        run: go mod download
 
-    - name: Install dependencies
-      run: go mod download
+      - name: Run Task 8 Controller Tests
+        working-directory: ./task-8
+        run: go test ./tests/controller_tests/...
 
-    - name: Run tests
-      run: |
-        go test ./tests/usecase_tests/... -v
-        go test ./tests/controller_tests/... -v
-
-    - name: Build
-      run: go build -v
+      - name: Run Task 8 Use Case Tests
+        working-directory: ./task-8
+        run: go test ./tests/usecase_tests/...
